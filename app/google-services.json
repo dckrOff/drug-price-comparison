@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "439792906017",
+    "project_id": "testproject-7ed45",
+    "storage_bucket": "testproject-7ed45.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:439792906017:android:f1fbd50444ce0e79a3d860",
+        "android_client_info": {
+          "package_name": "com.a1tech.drugprice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "439792906017-0ketf5bjs496pkknieu5hkfndr9f2bm3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1zxDvpx3J9AuNW5lXyTHttraxgW_J3ao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "439792906017-0ketf5bjs496pkknieu5hkfndr9f2bm3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
