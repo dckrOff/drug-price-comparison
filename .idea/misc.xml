@@ -4,10 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/drawable/ic_arrow_blue.xml" value="0.289" />
+        <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/drawable/ic_location.xml" value="0.289" />
         <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/drawable/item_bg.xml" value="0.289" />
-        <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/layout/activity_drug.xml" value="0.33" />
+        <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/drawable/rounded.xml" value="0.289" />
+        <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/layout/activity_drug.xml" value="0.25" />
         <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/layout/activity_main.xml" value="0.38697916666666665" />
+        <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.25" />
         <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/layout/item_category.xml" value="0.5" />
+        <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/layout/item_pharmacies.xml" value="0.33" />
         <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/layout/item_specs.xml" value="0.5" />
       </map>
     </option>
@@ -17,5 +21,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.75" />
+      </ProjectState>
+    </option>
   </component>
 </project>
