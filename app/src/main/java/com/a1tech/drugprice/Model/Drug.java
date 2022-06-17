@@ -2,10 +2,10 @@ package com.a1tech.drugprice.Model;
 
 public class Drug {
 
-    private String drugName;
-    private String drugPrice;
-    private String drugImg;
-    private int drugId;
+    private final String drugName;
+    private final String drugPrice;
+    private final String drugImg;
+    private final int drugId;
 
     public Drug(String drugName, String drugPrice, String drugImg, int drugId) {
         this.drugName = drugName;

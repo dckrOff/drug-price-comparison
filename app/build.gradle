@@ -46,4 +46,11 @@ dependencies {
     // google map
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
     implementation 'com.google.android.gms:play-services-location:20.0.0'
+
+    //    ### OpenStreetMap-Tools ###
+    implementation 'org.osmdroid:osmdroid-android:6.0.1'
+    implementation "com.github.MKergall:osmbonuspack:6.5.1"
+
+    // sweet alert dialog
+    implementation 'com.github.f0ris.sweetalert:library:1.5.6'
 }

@@ -50,7 +50,8 @@ public class PharmAdapter extends RecyclerView.Adapter<PharmAdapter.MyViewHolder
         String formatPrice = decimalFormat.format(Double.valueOf(Integer.parseInt(pharms.getThisDrugPrice())));
 
         holder.pharmName.setText(pharms.getPharmName());
-        holder.distance.setText(getDistance(pharms));
+//        holder.distance.setText(getDistance(pharms));
+        holder.distance.setText("200");
         holder.thisDrugPrice.setText(formatPrice + " сум");
         Glide.with(inflater.getContext()).load(pharms.getDrugImage()).into(holder.drugImage);
 

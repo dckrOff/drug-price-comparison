@@ -1,61 +1,69 @@
 package com.a1tech.drugprice.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.a1tech.drugprice.Adapter.PharmAdapter;
-import com.a1tech.drugprice.Model.Pharm;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.a1tech.drugprice.R;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
+import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private final String TAG = "RouteActivity";
+    private final int ACCESS_LOCATION_REQUEST_CODE = 10001;
     private ImageView ivDrugImage;
     private TextView tvPharmName, tvDrugPrice, tvPharmDistance;
-
-    private final int ACCESS_LOCATION_REQUEST_CODE = 10001;
+    private String pharmaName, drugImage;
+    private double pharmLat, pharmLon;
+    private LatLng pharmLatLng, currentLatLng;
+    private Road road;
+    private Polyline polyline;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
     private double lat, lon;
@@ -74,12 +82,12 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pharm);
+        setContentView(R.layout.activity_route);
 
         init();
         initMap();
+        getDataFromPrefs();
         setLocationUpdateInterval();
-
     }
 
     private void init() {
@@ -96,6 +104,19 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         geocoder = new Geocoder(this);
     }
 
+    private void getDataFromPrefs() {
+        Bundle arguments = getIntent().getExtras();
+        pharmaName = arguments.get("pharma_name").toString();
+        drugImage = arguments.get("drug_image").toString();
+        pharmLat = arguments.getDouble("lat", 0.0);
+        pharmLon = arguments.getDouble("lon", 0.0);
+
+        pharmLatLng = new LatLng(pharmLat, pharmLon);
+
+        tvPharmName.setText(pharmaName);
+        Glide.with(this).load(drugImage).into(ivDrugImage);
+    }
+
     private void setLocationUpdateInterval() {
         // set map update interval
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -103,6 +124,22 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         locationRequest.setInterval(500);
         locationRequest.setFastestInterval(500);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    private void calcMaxMinBound() {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        //the include method will calculate the min and max bound.
+        builder.include(pharmLatLng);
+        builder.include(currentLatLng);
+
+        LatLngBounds bounds = builder.build();
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+        int padding = (int) (width * 0.17); // offset from edges of the map 10% of screen
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+        mMap.animateCamera(cu);
+
     }
 
     @Override
@@ -123,29 +160,91 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_LOCATION_REQUEST_CODE);
             }
         }
+        route();
     }
 
     private void setUserLocationMarker(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         lat = location.getLatitude();   // set current location
         lon = location.getLongitude();
-        Log.e(TAG, String.valueOf(latLng));
+        Log.e(TAG, String.valueOf(currentLatLng));
 
         if (userLocationMarker == null) {
             //Create a new marker
             MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
+            markerOptions.position(currentLatLng);
 //            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.greencar));
 //            markerOptions.rotation(location.getBearing());
             markerOptions.anchor((float) 0.5, (float) 1);
             userLocationMarker = mMap.addMarker(markerOptions);
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 14));
         } else {
             //use the previously created marker
-            userLocationMarker.setPosition(latLng);
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+            userLocationMarker.setPosition(currentLatLng);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 14));
 //            userLocationMarker.setRotation(location.getBearing());
         }
+        calcMaxMinBound();
+    }
+
+    private void route() {
+        final GeoPoint startPoint = new GeoPoint(lat, lon);
+        final GeoPoint endPoint = new GeoPoint(pharmLat, pharmLon);
+
+        if (endPoint.getLatitude() == 0d || endPoint.getLongitude() == 0d) return;
+        if (startPoint.getLatitude() == 0d || startPoint.getLongitude() == 0d) return;
+
+        AsyncTask.execute(() -> {
+            RoadManager roadManager = new OSRMRoadManager(this);
+            ArrayList<GeoPoint> wayPoints = new ArrayList<>();
+            wayPoints.add(startPoint);
+            wayPoints.add(endPoint);
+            road = roadManager.getRoad(wayPoints);
+            if (road.mStatus != Road.STATUS_OK) {
+                runOnUiThread(this::showDialogRoutingTechnicalIssue);
+                return;
+            }
+            drawRouteOnGMap();
+        });
+    }
+
+    private void drawRouteOnGMap() {
+        ArrayList<LatLng> list = new ArrayList();
+
+        Log.e(TAG, "listSize " + list.size());
+        for (int i = 0; i < road.mRouteHigh.size(); i++) {
+            list.add(new LatLng(road.mRouteHigh.get(i).getLatitude(), road.mRouteHigh.get(i).getLongitude()));
+        }
+
+        PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+        for (int z = 0; z < list.size(); z++) {
+            LatLng point = new LatLng(list.get(z).latitude, list.get(z).longitude);
+            options.add(point);
+        }
+        mMap.clear();
+        polyline = mMap.addPolyline(options);
+    }
+
+    private void showDialogRoutingTechnicalIssue() {
+        // 2. Confirmation message
+        new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                .setTitleText("Внимание!")
+                .setContentText("Marshrut chizishda xatolik yuz berdi")
+                .setConfirmText("Qayta urunish")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                        route();
+                    }
+                })
+                .setCancelButton("OK", new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
     }
 
     private void startLocationUpdates() {
