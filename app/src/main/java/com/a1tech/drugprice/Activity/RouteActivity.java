@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.a1tech.drugprice.Model.Pharm;
 import com.a1tech.drugprice.R;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -185,6 +186,26 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 //            userLocationMarker.setRotation(location.getBearing());
         }
         calcMaxMinBound();
+        tvPharmDistance.setText(getDistance());
+    }
+
+    public float calculateDistance(double startLat, double startLon, double endLat, double endLon) {
+        float[] results = new float[1];
+        Location.distanceBetween(startLat, startLon, endLat, endLon, results);
+
+        return results[0];
+    }
+
+    private String getDistance() {
+        float distance = calculateDistance(lat, lon, pharmLat, pharmLon);
+        String dis = null;
+        if (distance > 999) {
+            dis = (distance / 100) + "км от вас";
+            return dis;
+        } else {
+            dis = distance + "м от вас";
+            return dis;
+        }
     }
 
     private void route() {
