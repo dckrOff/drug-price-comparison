@@ -2,6 +2,7 @@ package com.a1tech.drugprice.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.a1tech.drugprice.Activity.PharmsActivity;
 import com.a1tech.drugprice.Model.Drug;
 import com.a1tech.drugprice.R;
 import com.bumptech.glide.Glide;
@@ -47,6 +49,15 @@ public class DrugsAdapter extends RecyclerView.Adapter<DrugsAdapter.MyViewHolder
         holder.drugName.setText(drug.getDrugName());
         holder.drugPrice.setText("от " + formatPrice + " сум");
         Glide.with(inflater.getContext()).load(drug.getDrugImg()).into(holder.drugImage);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(inflater.getContext(), PharmsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                inflater.getContext().startActivity(intent);
+            }
+        });
     }
 
 
