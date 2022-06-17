@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -22,10 +21,10 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.a1tech.drugprice.Adapter.PharmAdapter;
 import com.a1tech.drugprice.Model.Pharm;
@@ -39,9 +38,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -50,21 +47,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Objects;
 
-public class PharmsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private final String TAG = "PharmActivity   ";
-    private BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
-    private RecyclerView rvPharma;
-    private ArrayList<Pharm> pharms = new ArrayList<Pharm>();
-    private ConstraintLayout bottomSheet;
+    private final String TAG = "RouteActivity";
+    private ImageView ivDrugImage;
+    private TextView tvPharmName, tvDrugPrice, tvPharmDistance;
 
     private final int ACCESS_LOCATION_REQUEST_CODE = 10001;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
-    private double lat = 0, lon = 0;
+    private double lat, lon;
     private GoogleMap mMap;
     private Geocoder geocoder;
     private Marker userLocationMarker;
@@ -84,61 +78,15 @@ public class PharmsActivity extends AppCompatActivity implements OnMapReadyCallb
 
         init();
         initMap();
-        setList();
-        setAdapter();
         setLocationUpdateInterval();
+
     }
 
     private void init() {
-        rvPharma = findViewById(R.id.rv_pharma);
-        bottomSheet = findViewById(R.id.bottomSheet);
-
-        //#2 Initializing the BottomSheetBehavior
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-
-        bottomSheetBehavior.setPeekHeight(250);
-//        bottomSheetBehavior.setMaxHeight(1000);
-        bottomSheetBehavior.setHideable(false);
-
-        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                newState = BottomSheetBehavior.STATE_COLLAPSED;
-//                newState = BottomSheetBehavior.STATE_EXPANDED;
-//                newState = BottomSheetBehavior.STATE_DRAGGING;
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
-    }
-
-    private void setList() {
-        pharms.add(new Pharm("Gulora MED PLUS 5+", "79000", "200м от вас", "https://firebasestorage.googleapis.com/v0/b/testproject-7ed45.appspot.com/o/Drugs%2FIngavirin-e1565687015128.jpg?alt=media&token=854fa891-08a5-4536-8ca7-9d996f9dbc62", 41.56015653488088, 60.632432724313915));
-    }
-
-    private void setAdapter() {
-        rvPharma.setLayoutManager(new GridLayoutManager(this, 1));
-        PharmAdapter pharmAdapter = new PharmAdapter(getApplicationContext(), pharms);
-        rvPharma.setAdapter(pharmAdapter); // set the Adapter to RecyclerView
-    }
-
-    public LatLng getCurrentLocation() {
-        LatLng latLng = null;
-        if (lat != 0 && lon != 0) {
-            latLng = new LatLng(lat, lon);
-        }
-        return latLng;
-    }
-
-    public float calculateDistance(double startLat, double startLon, double endLat, double endLon) {
-        float[] results = new float[1];
-        Location.distanceBetween(startLat, startLon, endLat, endLon, results);
-
-        return results[0];
+        ivDrugImage = findViewById(R.id.iv_drug_image_route);
+        tvPharmName = findViewById(R.id.tv_pharma_name_route);
+        tvDrugPrice = findViewById(R.id.tv_drug_price_route);
+        tvPharmDistance = findViewById(R.id.tv_distance_route);
     }
 
     private void initMap() {

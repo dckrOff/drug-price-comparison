@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class DrugsAdapter extends RecyclerView.Adapter<DrugsAdapter.MyViewHolder> {
 
     private final LayoutInflater inflater;
-    private final ArrayList<Drug> drugList;
+    private ArrayList<Drug> drugList;
 
     private final String pattern = "###,###,###.###";
     private final DecimalFormat decimalFormat = new DecimalFormat(pattern);
@@ -30,6 +30,17 @@ public class DrugsAdapter extends RecyclerView.Adapter<DrugsAdapter.MyViewHolder
     public DrugsAdapter(Context context, ArrayList<Drug> drugList) {
         this.drugList = drugList;
         this.inflater = LayoutInflater.from(context);
+    }
+
+    // method for filtering our recyclerview items.
+    @SuppressLint("NotifyDataSetChanged")
+    public void filterList(ArrayList<Drug> filterllist) {
+        // below line is to add our filtered
+        // list in our course array list.
+        drugList = filterllist;
+        // below line is to notify our adapter
+        // as change in recycler view data.
+        notifyDataSetChanged();
     }
 
     @Override
