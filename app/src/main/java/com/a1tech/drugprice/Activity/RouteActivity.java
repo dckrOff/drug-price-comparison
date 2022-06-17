@@ -1,6 +1,7 @@
 package com.a1tech.drugprice.Activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +50,7 @@ import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.util.GeoPoint;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -58,9 +60,11 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
     private final String TAG = "RouteActivity";
     private final int ACCESS_LOCATION_REQUEST_CODE = 10001;
+    private final String pattern = "###,###,###.###";
+    private final DecimalFormat decimalFormat = new DecimalFormat(pattern);
     private ImageView ivDrugImage;
     private TextView tvPharmName, tvDrugPrice, tvPharmDistance;
-    private String pharmaName, drugImage;
+    private String pharmaName, drugImage, drugPrice;
     private double pharmLat, pharmLon;
     private LatLng pharmLatLng, currentLatLng;
     private Road road;
@@ -71,10 +75,9 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     private GoogleMap mMap;
     private Geocoder geocoder;
     private Marker userLocationMarker;
-    private Circle userLocationAccuracyCircle;
-    private LocationCallback locationCallback = new LocationCallback() {
+    private final LocationCallback locationCallback = new LocationCallback() {
         @Override
-        public void onLocationResult(LocationResult locationResult) {
+        public void onLocationResult(@NonNull LocationResult locationResult) {
             super.onLocationResult(locationResult);
             setUserLocationMarker(Objects.requireNonNull(locationResult.getLastLocation()));
         }
@@ -105,16 +108,20 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         geocoder = new Geocoder(this);
     }
 
+    @SuppressLint("SetTextI18n")
     private void getDataFromPrefs() {
         Bundle arguments = getIntent().getExtras();
         pharmaName = arguments.get("pharma_name").toString();
         drugImage = arguments.get("drug_image").toString();
+        drugPrice = arguments.get("drug_price").toString();
         pharmLat = arguments.getDouble("lat", 0.0);
         pharmLon = arguments.getDouble("lon", 0.0);
-
         pharmLatLng = new LatLng(pharmLat, pharmLon);
 
+        // formatter of number(1234567890)-- > (1 234 567 890)
+        String formatPrice = decimalFormat.format(Double.valueOf(Integer.parseInt(drugPrice)));
         tvPharmName.setText(pharmaName);
+        tvDrugPrice.setText(formatPrice + " сум");
         Glide.with(this).load(drugImage).into(ivDrugImage);
     }
 

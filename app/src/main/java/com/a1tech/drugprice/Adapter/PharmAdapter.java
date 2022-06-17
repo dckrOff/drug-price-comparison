@@ -61,6 +61,7 @@ public class PharmAdapter extends RecyclerView.Adapter<PharmAdapter.MyViewHolder
                 Intent intent = new Intent(inflater.getContext(), RouteActivity.class);
                 intent.putExtra("pharma_name", pharms.getPharmName());
                 intent.putExtra("drug_image", pharms.getDrugImage());
+                intent.putExtra("drug_price", pharms.getThisDrugPrice());
                 intent.putExtra("lat", pharms.getLat());
                 intent.putExtra("lon", pharms.getLon());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -80,7 +81,6 @@ public class PharmAdapter extends RecyclerView.Adapter<PharmAdapter.MyViewHolder
             return dis;
         }
     }
-
 
     @Override
     public int getItemCount() {

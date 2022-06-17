@@ -117,7 +117,7 @@ public class PharmsActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     private void setList() {
-        pharms.add(new Pharm("Gulora MED PLUS 5+", "79000", "200м от вас", "https://firebasestorage.googleapis.com/v0/b/testproject-7ed45.appspot.com/o/Drugs%2FIngavirin-e1565687015128.jpg?alt=media&token=854fa891-08a5-4536-8ca7-9d996f9dbc62", 41.56015653488088, 60.632432724313915));
+        pharms.add(new Pharm("Gulora MED PLUS 5+", "79000",  "https://firebasestorage.googleapis.com/v0/b/testproject-7ed45.appspot.com/o/Drugs%2FIngavirin-e1565687015128.jpg?alt=media&token=854fa891-08a5-4536-8ca7-9d996f9dbc62", 41.56015653488088, 60.632432724313915));
     }
 
     private void setAdapter() {
