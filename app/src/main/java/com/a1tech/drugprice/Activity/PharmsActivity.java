@@ -11,13 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
@@ -25,6 +21,7 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.a1tech.drugprice.Adapter.PharmAdapter;
 import com.a1tech.drugprice.Model.Pharm;
@@ -39,7 +36,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
@@ -64,6 +60,7 @@ public class PharmsActivity extends AppCompatActivity implements OnMapReadyCallb
     private final int ACCESS_LOCATION_REQUEST_CODE = 10001;
     private BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
     private RecyclerView rvPharma;
+    private ImageView mapType;
     private ArrayList<Pharm> pharms = new ArrayList<Pharm>();
     private ConstraintLayout bottomSheet;
     private String drugImg, drugId;
@@ -74,6 +71,7 @@ public class PharmsActivity extends AppCompatActivity implements OnMapReadyCallb
     private double lat = 0, lon = 0;
     private GoogleMap mMap;
     private Geocoder geocoder;
+    private boolean mapChanged = false;
     private Marker userLocationMarker;
     private boolean distanceSet = false;
     private Circle userLocationAccuracyCircle;
@@ -106,7 +104,7 @@ public class PharmsActivity extends AppCompatActivity implements OnMapReadyCallb
         drugId = arguments.get("drug_id").toString();
         myRef = database.getReference(drugId);
 
-
+        mapType = findViewById(R.id.mapType);
         rvPharma = findViewById(R.id.rv_pharma);
         bottomSheet = findViewById(R.id.bottomSheet);
 
@@ -128,8 +126,25 @@ public class PharmsActivity extends AppCompatActivity implements OnMapReadyCallb
 
             }
         });
+        mapType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeMapType();
+            }
+        });
 
+    }
 
+    private void changeMapType() {
+        if (!mapChanged) {
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            mapChanged = true;
+//            changeMapType.setBackgroundResource(R.drawable.ic_satellite);
+        } else {
+            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            mapChanged = false;
+//            changeMapType.setBackgroundResource(R.drawable.ic_default);
+        }
     }
 
     private void setList() {

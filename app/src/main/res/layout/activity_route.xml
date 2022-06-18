@@ -12,11 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <ImageView
+        android:id="@+id/mapType"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_type"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_margin="5dp"
+        android:alpha="0.8"
         android:background="@drawable/item_bg"
         app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="@+id/map"
@@ -59,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
-                android:text="1,5 км от вас "
+                android:text="0 км от вас "
                 android:textColor="#14FF00"
                 android:textSize="11sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_drug_price_route"

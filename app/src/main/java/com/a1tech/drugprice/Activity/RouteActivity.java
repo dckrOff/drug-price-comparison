@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -63,7 +64,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     private final int ACCESS_LOCATION_REQUEST_CODE = 10001;
     private final String pattern = "###,###,###.###";
     private final DecimalFormat decimalFormat = new DecimalFormat(pattern);
-    private ImageView ivDrugImage;
+    private ImageView ivDrugImage,mapType;
     private TextView tvPharmName, tvDrugPrice, tvPharmDistance;
     private String pharmaName, drugImage, drugPrice;
     private double pharmLat, pharmLon;
@@ -73,6 +74,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
     private double lat, lon;
+    private boolean mapChanged = false;
     private boolean distanceSet = false;
     private GoogleMap mMap;
     private Geocoder geocoder;
@@ -101,6 +103,13 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         tvPharmName = findViewById(R.id.tv_pharma_name_route);
         tvDrugPrice = findViewById(R.id.tv_drug_price_route);
         tvPharmDistance = findViewById(R.id.tv_distance_route);
+        mapType = findViewById(R.id.mapType);
+        mapType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeMapType();
+            }
+        });
     }
 
     private void initMap() {
@@ -125,6 +134,18 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         tvPharmName.setText(pharmaName);
         tvDrugPrice.setText(formatPrice + " сум");
         Glide.with(this).load(drugImage).into(ivDrugImage);
+    }
+
+    private void changeMapType() {
+        if (!mapChanged) {
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            mapChanged = true;
+//            changeMapType.setBackgroundResource(R.drawable.ic_satellite);
+        } else {
+            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            mapChanged = false;
+//            changeMapType.setBackgroundResource(R.drawable.ic_default);
+        }
     }
 
     private void setLocationUpdateInterval() {
