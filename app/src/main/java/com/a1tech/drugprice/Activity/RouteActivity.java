@@ -35,6 +35,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -72,6 +73,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
     private double lat, lon;
+    private boolean distanceSet = false;
     private GoogleMap mMap;
     private Geocoder geocoder;
     private Marker userLocationMarker;
@@ -138,8 +140,8 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
         //the include method will calculate the min and max bound.
-        builder.include(pharmLatLng);
         builder.include(currentLatLng);
+        builder.include(pharmLatLng);
 
         LatLngBounds bounds = builder.build();
         int width = getResources().getDisplayMetrics().widthPixels;
@@ -153,7 +155,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         // mMap.setOnMapLongClickListener(this);
         // mMap.setOnMarkerDragListener(this);
@@ -168,6 +170,10 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_LOCATION_REQUEST_CODE);
             }
         }
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(pharmLatLng);
+//        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_pharmacies));
+        mMap.addMarker(markerOptions);
         route();
     }
 
@@ -193,7 +199,11 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 //            userLocationMarker.setRotation(location.getBearing());
         }
         calcMaxMinBound();
-        tvPharmDistance.setText(getDistance());
+        if (!distanceSet) {
+            tvPharmDistance.setText(getDistance());
+            distanceSet = true;
+        }
+        route();
     }
 
     public float calculateDistance(double startLat, double startLon, double endLat, double endLon) {
@@ -203,19 +213,22 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         return results[0];
     }
 
-    private String getDistance() {
+    @SuppressLint("DefaultLocale")
+    public String getDistance() {
         float distance = calculateDistance(lat, lon, pharmLat, pharmLon);
+        Log.e(TAG, "distance-> " + distance);
         String dis = null;
         if (distance > 999) {
-            dis = (distance / 100) + "км от вас";
+            dis = String.format("%.2f", (distance / 1000)) + " км от вас";
             return dis;
         } else {
-            dis = distance + "м от вас";
+            dis = String.format("%.2f", distance) + " м от вас";
             return dis;
         }
     }
 
     private void route() {
+        Log.e(TAG,"route->");
         final GeoPoint startPoint = new GeoPoint(lat, lon);
         final GeoPoint endPoint = new GeoPoint(pharmLat, pharmLon);
 
@@ -223,6 +236,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         if (startPoint.getLatitude() == 0d || startPoint.getLongitude() == 0d) return;
 
         AsyncTask.execute(() -> {
+        Log.e(TAG,"route->1");
             RoadManager roadManager = new OSRMRoadManager(this);
             ArrayList<GeoPoint> wayPoints = new ArrayList<>();
             wayPoints.add(startPoint);

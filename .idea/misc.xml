@@ -21,7 +21,11 @@
         <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/layout/item_category.xml" value="0.5" />
         <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/layout/item_pharmacies.xml" value="0.33" />
         <entry key="..\:/Users/My PC/AndroidStudioProjects/DrugPrice/app/src/main/res/layout/item_specs.xml" value="0.5" />
-        <entry key="..\:/Users/My PC/AndroidStudioProjects/drug-price-comparison/app/src/main/res/layout/activity_route.xml" value="0.5" />
+        <entry key="..\:/Users/My PC/AndroidStudioProjects/drug-price-comparison/app/src/main/res/drawable/ic_location.xml" value="0.297" />
+        <entry key="..\:/Users/My PC/AndroidStudioProjects/drug-price-comparison/app/src/main/res/layout/activity_pharm.xml" value="0.33" />
+        <entry key="..\:/Users/My PC/AndroidStudioProjects/drug-price-comparison/app/src/main/res/layout/activity_route.xml" value="0.33" />
+        <entry key="..\:/Users/My PC/AndroidStudioProjects/drug-price-comparison/app/src/main/res/layout/item_category.xml" value="0.38697916666666665" />
+        <entry key="..\:/Users/My PC/AndroidStudioProjects/drug-price-comparison/app/src/main/res/layout/item_pharmacies.xml" value="0.38697916666666665" />
       </map>
     </option>
   </component>

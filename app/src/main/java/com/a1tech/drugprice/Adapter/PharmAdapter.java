@@ -17,6 +17,7 @@ import com.a1tech.drugprice.Model.Drug;
 import com.a1tech.drugprice.Model.Pharm;
 import com.a1tech.drugprice.R;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -25,10 +26,10 @@ public class PharmAdapter extends RecyclerView.Adapter<PharmAdapter.MyViewHolder
 
     private final LayoutInflater inflater;
     private final ArrayList<Pharm> pharms;
-    private PharmsActivity pharmsActivity = new PharmsActivity();
-
     private final String pattern = "###,###,###.###";
     private final DecimalFormat decimalFormat = new DecimalFormat(pattern);
+    private PharmsActivity pharmsActivity = new PharmsActivity();
+    private LatLng pharmLatLng;
 
     public PharmAdapter(Context context, ArrayList<Pharm> pharms) {
         this.pharms = pharms;
@@ -50,7 +51,10 @@ public class PharmAdapter extends RecyclerView.Adapter<PharmAdapter.MyViewHolder
         String formatPrice = decimalFormat.format(Double.valueOf(Integer.parseInt(pharms.getThisDrugPrice())));
 
         holder.pharmName.setText(pharms.getPharmName());
-        holder.distance.setText(getDistance(pharms));
+
+        pharmLatLng = new LatLng(pharms.getLat(), pharms.getLon());
+        holder.distance.setText(pharms.getDistance());
+
 //        holder.distance.setText("200");
         holder.thisDrugPrice.setText(formatPrice + " сум");
         Glide.with(inflater.getContext()).load(pharms.getDrugImage()).into(holder.drugImage);
@@ -68,18 +72,6 @@ public class PharmAdapter extends RecyclerView.Adapter<PharmAdapter.MyViewHolder
                 inflater.getContext().startActivity(intent);
             }
         });
-    }
-
-    private String getDistance(Pharm pharm) {
-        float distance = pharmsActivity.calculateDistance(pharmsActivity.getCurrentLocation().latitude, pharmsActivity.getCurrentLocation().longitude, pharm.getLat(), pharm.getLon());
-        String dis = null;
-        if (distance > 999) {
-            dis = (distance / 100) + "км от вас";
-            return dis;
-        } else {
-            dis = distance + "м от вас";
-            return dis;
-        }
     }
 
     @Override

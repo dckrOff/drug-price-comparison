@@ -5,9 +5,9 @@ public class Drug {
     private final String drugName;
     private final String drugPrice;
     private final String drugImg;
-    private final int drugId;
+    private final String drugId;
 
-    public Drug(String drugName, String drugPrice, String drugImg, int drugId) {
+    public Drug(String drugName, String drugPrice, String drugImg, String drugId) {
         this.drugName = drugName;
         this.drugPrice = drugPrice;
         this.drugImg = drugImg;
@@ -26,7 +26,7 @@ public class Drug {
         return drugImg;
     }
 
-    public int getDrugId() {
+    public String getDrugId() {
         return drugId;
     }
 }

@@ -65,6 +65,8 @@ public class DrugsAdapter extends RecyclerView.Adapter<DrugsAdapter.MyViewHolder
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(inflater.getContext(), PharmsActivity.class);
+                intent.putExtra("drug_img",drug.getDrugImg());
+                intent.putExtra("drug_id",drug.getDrugId());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 inflater.getContext().startActivity(intent);
             }

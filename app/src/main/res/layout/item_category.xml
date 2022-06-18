@@ -8,7 +8,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="220dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:cardCornerRadius="10dp"
@@ -38,6 +38,7 @@
                 android:layout_marginTop="24dp"
                 android:fontFamily="@font/poppins_bold"
                 android:text="Ингарин 90мг"
+                android:gravity="center"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_drug_price"

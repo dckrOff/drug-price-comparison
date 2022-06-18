@@ -7,13 +7,15 @@ public class Pharm {
     private final String drugImage;
     private final double lat;
     private final double lon;
+    private final String distance;
 
-    public Pharm(String pharmName, String thisDrugPrice, String drugImage, double lat, double lon) {
+    public Pharm(String pharmName, String thisDrugPrice, String drugImage, double lat, double lon, String distance) {
         this.pharmName = pharmName;
         this.thisDrugPrice = thisDrugPrice;
         this.drugImage = drugImage;
         this.lat = lat;
         this.lon = lon;
+        this.distance = distance;
     }
 
     public String getPharmName() {
@@ -34,5 +36,9 @@ public class Pharm {
 
     public double getLon() {
         return lon;
+    }
+
+    public String getDistance() {
+        return distance;
     }
 }
