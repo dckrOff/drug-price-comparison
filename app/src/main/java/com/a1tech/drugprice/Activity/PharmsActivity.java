@@ -143,8 +143,10 @@ public class PharmsActivity extends AppCompatActivity implements OnMapReadyCallb
 //                    Log.e(TAG, "1) " + childDataSnapshot.getKey()); //displays the key for the node
 //                    Log.e(TAG, "2) " + childDataSnapshot.child("img").getValue());   //gives the value for given keyname
                     pharms.add(new Pharm(childDataSnapshot.child("pharm_name").getValue().toString(), childDataSnapshot.child("price").getValue().toString(), drugImg, Double.parseDouble(childDataSnapshot.child("lat").getValue().toString()), Double.parseDouble(childDataSnapshot.child("lon").getValue().toString()), getDistance(Double.parseDouble(childDataSnapshot.child("lat").getValue().toString()), Double.parseDouble(childDataSnapshot.child("lon").getValue().toString()))));
+
                     latLng = new LatLng(Double.parseDouble(childDataSnapshot.child("lat").getValue().toString()), Double.parseDouble(childDataSnapshot.child("lon").getValue().toString()));
                     markerOptions.position(latLng);
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker));
                     mMap.addMarker(markerOptions).setTitle(childDataSnapshot.child("pharm_name").getValue().toString());
                 }
                 Collections.sort(pharms, new MyComparator());

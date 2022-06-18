@@ -172,7 +172,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         }
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(pharmLatLng);
-//        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_pharmacies));
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker));
         mMap.addMarker(markerOptions);
         route();
     }
@@ -228,7 +228,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     private void route() {
-        Log.e(TAG,"route->");
+        Log.e(TAG, "route->");
         final GeoPoint startPoint = new GeoPoint(lat, lon);
         final GeoPoint endPoint = new GeoPoint(pharmLat, pharmLon);
 
@@ -236,7 +236,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         if (startPoint.getLatitude() == 0d || startPoint.getLongitude() == 0d) return;
 
         AsyncTask.execute(() -> {
-        Log.e(TAG,"route->1");
+            Log.e(TAG, "route->1");
             RoadManager roadManager = new OSRMRoadManager(this);
             ArrayList<GeoPoint> wayPoints = new ArrayList<>();
             wayPoints.add(startPoint);
@@ -258,13 +258,15 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
             list.add(new LatLng(road.mRouteHigh.get(i).getLatitude(), road.mRouteHigh.get(i).getLongitude()));
         }
 
-        PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+        PolylineOptions options = new PolylineOptions().width(6).color(Color.BLUE).geodesic(true);
         for (int z = 0; z < list.size(); z++) {
             LatLng point = new LatLng(list.get(z).latitude, list.get(z).longitude);
             options.add(point);
         }
-        mMap.clear();
-        polyline = mMap.addPolyline(options);
+        runOnUiThread(() -> {
+//            mMap.clear();
+            polyline = mMap.addPolyline(options);
+        });
     }
 
     private void showDialogRoutingTechnicalIssue() {
